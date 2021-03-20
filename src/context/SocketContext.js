@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { createContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
+import { scrollToBottomAnimated } from "../helpers/scrollToBottom";
 import { useSocket } from "../hooks/useSocket";
 import { types } from "../types/types";
 import { ChatContext } from "./chat/ChatContext";
@@ -38,9 +39,14 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     socket?.on("mensaje-personal", (mensaje) => {
-      console.log(mensaje);
+      dispatch({
+        type: types.nuevoMensaje,
+        payload: mensaje,
+      });
+
+      scrollToBottomAnimated("mensajes");
     });
-  }, [socket]);
+  }, [socket, dispatch]);
 
   return (
     <SocketContext.Provider value={{ socket, online }}>
